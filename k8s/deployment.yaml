@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web2.0
+  labels:
+    app: greeting
+    type: canary
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: greeting
+  template:
+    metadata:
+      labels:
+        app: greeting
+        type: canary
+    spec:
+      containers:
+        - name: greeting
+          image: greeting:latest
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: greetingservice
+spec:
+  selector:
+    app: greeting
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: LoadBalancer

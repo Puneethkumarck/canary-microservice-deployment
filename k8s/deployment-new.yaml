@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web3.0
+  labels:
+    app: greeting
+    type: canary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: greeting
+  template:
+    metadata:
+      labels:
+        app: greeting
+        type: canary
+    spec:
+      containers:
+        - name: greeting
+          image: greeting:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: greeting.message
+              valueFrom:
+                configMapKeyRef:
+                  name: canary-config
+                  key: greeting.message
+          ports:
+            - containerPort: 8080
